@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小蝴蝶 - 真实邮箱注册教程</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f0fdfa, #ccfbf1, #e0f2fe);
+            color: #1e293b;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 背景动画粒子 */
+        .bg-particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-particles span {
+            position: absolute;
+            display: block;
+            width: 4px; height: 4px;
+            background: rgba(13, 148, 136, 0.25);
+            border-radius: 50%;
+            animation: float-up linear infinite;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 顶部标题 */
+        .hero {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #0d9488, #0891b2);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #0d9488, #0891b2, #0284c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #64748b;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* 步骤计数器 */
+        .steps-overview {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        .step-dot {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: rgba(13, 148, 136, 0.1);
+            border: 2px solid rgba(13, 148, 136, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: #0d9488;
+            transition: all 0.3s;
+        }
+        .step-dot.active {
+            background: linear-gradient(135deg, #0d9488, #0891b2);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 20px rgba(13, 148, 136, 0.4);
+        }
+        .step-connector {
+            width: 40px;
+            height: 2px;
+            background: rgba(13, 148, 136, 0.2);
+            align-self: center;
+        }
+
+        /* 步骤卡片 */
+        .step-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(13, 148, 136, 0.15);
+            border-radius: 20px;
+            padding: 36px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-color: rgba(13, 148, 136, 0.3);
+        }
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #0d9488, #0891b2, #06b6d4);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .step-number {
+            width: 52px; height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #0d9488, #0891b2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(13, 148, 136, 0.3);
+        }
+        .step-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .step-desc {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .step-desc strong {
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        /* 截图容器 */
+        .screenshot {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-top: 16px;
+        }
+        .screenshot img {
+            width: 100%;
+            display: block;
+        }
+
+        /* 提示标签 */
+        .tip {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #6ee7b7;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .tip-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #fcd34d;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        .footer a {
+            color: #8b5cf6;
+            text-decoration: none;
+        }
+
+        /* 动画 */
+        .step-card {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        .step-card:nth-child(1) { animation-delay: 0.1s; }
+        .step-card:nth-child(2) { animation-delay: 0.2s; }
+        .step-card:nth-child(3) { animation-delay: 0.3s; }
+        .step-card:nth-child(4) { animation-delay: 0.4s; }
+        .step-card:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 28px; }
+            .hero p { font-size: 15px; }
+            .step-card { padding: 24px; }
+            .step-title { font-size: 18px; }
+            .container { padding: 20px 16px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 背景粒子 -->
+<div class="bg-particles" id="particles"></div>
+
+<div class="container">
+    <!-- 标题 -->
+    <div class="hero">
+        <div class="hero-badge">📖 使用教程</div>
+        <h1>真实邮箱注册教程</h1>
+        <p>使用小蝴蝶自动注册工具的「真实邮箱模式」，轻松完成 Seedance 2.0 账号批量注册</p>
+    </div>
+
+    <!-- 步骤概览 -->
+    <div class="steps-overview" id="tutorial-steps">
+        <div class="step-dot active">1</div>
+        <div class="step-connector"></div>
+        <div class="step-dot active">2</div>
+        <div class="step-connector"></div>
+        <div class="step-dot active">3</div>
+        <div class="step-connector"></div>
+        <div class="step-dot active">4</div>
+        <div class="step-connector"></div>
+        <div class="step-dot active">5</div>
+    </div>
+
+    <!-- 步骤1 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-number">1</div>
+            <div class="step-title">点击「注册配置」</div>
+        </div>
+        <div class="step-desc">
+            打开软件后，在<strong>左侧导航栏</strong>找到「⚙ 注册配置」，点击进入配置页面。
+        </div>
+        <div class="screenshot">
+            <img src="step1.png" alt="点击注册配置">
+        </div>
+    </div>
+
+    <!-- 步骤2 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-number">2</div>
+            <div class="step-title">选择「真实邮箱模式」</div>
+        </div>
+        <div class="step-desc">
+            在<strong>「邮箱注册模式」</strong>区域，点击下拉框，将模式从「临时邮箱模式」切换为<strong>「真实邮箱模式」</strong>。<br>
+            切换后会显示剩余邮箱额度。
+        </div>
+        <div class="screenshot">
+            <img src="step2.png" alt="选择真实邮箱模式">
+        </div>
+        <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>真实邮箱模式使用管理员预置的 Outlook 邮箱注册，成功率极高（接近100%）。每个邮箱消耗1个额度。</span>
+        </div>
+    </div>
+
+    <!-- 步骤3 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-number">3</div>
+            <div class="step-title">填写注册数量和线程</div>
+        </div>
+        <div class="step-desc">
+            设置你想注册的账号<strong>数量</strong>，以及<strong>并发线程数</strong>。
+        </div>
+        <div class="screenshot">
+            <img src="step3.png" alt="填写数量和线程">
+        </div>
+        <div class="warning">
+            <span class="tip-icon">⚠️</span>
+            <span><strong>并发线程建议不超过 3</strong>。线程过多可能导致注册失败率升高，也会加大被检测的风险。建议新手使用 1~2 个线程。</span>
+        </div>
+    </div>
+
+    <!-- 步骤4 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-number">4</div>
+            <div class="step-title">保存配置</div>
+        </div>
+        <div class="step-desc">
+            页面拉到底部，点击<strong>「💾 保存配置」</strong>按钮，将当前设置保存。<br>
+            下次启动软件时会自动加载上次的配置。
+        </div>
+        <div class="screenshot">
+            <img src="step4.png" alt="保存配置">
+        </div>
+    </div>
+
+    <!-- 步骤5 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-number">5</div>
+            <div class="step-title">开始注册</div>
+        </div>
+        <div class="step-desc">
+            回到<strong>「仪表盘」</strong>页面，点击右上角的<strong>「▶ 开始注册」</strong>按钮，即可开始自动注册！<br>
+            注册过程中可在实时日志中查看进度。
+        </div>
+        <div class="screenshot">
+            <img src="step5.png" alt="开始注册">
+        </div>
+        <div class="tip">
+            <span class="tip-icon">✅</span>
+            <span>注册成功的账号会自动保存到「账号管理」页面，支持导出 CSV 文件。</span>
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+        <p>小蝴蝶自动注册工具 v2.3.0 · 真实邮箱模式教程</p>
+    </div>
+</div>
+
+<script>
+    // 生成背景粒子
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+        const span = document.createElement('span');
+        span.style.left = Math.random() * 100 + '%';
+        span.style.width = span.style.height = (Math.random() * 4 + 2) + 'px';
+        span.style.animationDuration = (Math.random() * 15 + 10) + 's';
+        span.style.animationDelay = (Math.random() * 10) + 's';
+        container.appendChild(span);
+    }
+</script>
+</body>
+</html>
